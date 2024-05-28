@@ -3,6 +3,7 @@
 This repository contains information about an issue I've seen in FreeRADIUS when testing status-server through TLS.
 
 FreeRADIUS version: 3.2.3
+
 Problem: FreeRADIUS crashes when sending status-server messages to endpoints over RadSec.
 
 My architecture is as follows:
