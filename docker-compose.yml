@@ -1,0 +1,46 @@
+version: "3"
+services:
+
+    tester:
+        build:
+            context: .
+        container_name: tester
+        depends_on:
+          - server
+        entrypoint: ["bash", "/entrypoint.sh", "client"]
+
+    server:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        privileged: true #from https://hub.docker.com/r/freeradius/freeradius-server/
+        ports:
+            - "2083:2083/tcp"
+        container_name: system-under-test
+        depends_on:
+          - test_endpoint1
+          - test_endpoint2
+        environment:
+            RADSEC_HOST1: test_endpoint1
+            RADSEC_HOST2: test_endpoint2
+        env_file:
+            - ./.env.testing
+
+    test_endpoint1:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: endpoint1
+        env_file:
+            ./.env.testing
+        entrypoint: ["bash", "/entrypoint.sh", "server"]
+
+    test_endpoint2:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: endpoint2
+        env_file:
+            ./.env.testing
+        entrypoint: ["bash", "/entrypoint.sh", "server"]
+
