@@ -1,32 +1,3 @@
-# fr-status-server-issue
-
-This repository contains information about an issue I've seen in FreeRADIUS when testing status-server through TLS.
-
-FreeRADIUS version: 3.2.3
-Problem: FreeRADIUS crashes when sending status-server messages to endpoints over RadSec.
-
-My architecture is as follows:
-```
-client -> system-under-test -> endpoint1/endpoint2
-```
-
-The purpose is to simulate a backend timeout which causes status-server messages to be sent.
-
-The `client` sends RADIUS messages over UDP containing username "test@user" to `system-under-test` which forwards them to `endpoint1` and `endpoint2` over RadSec. But `endpoint1` and `endpoint2` respond in 10 seconds which causes a timeout from system-under-test's point of view. This causes system-under-test to send status-server messages to the endpoints.
-
-Eventually `system-under-test` crashes and generates a core dump.
-
-## How to replicate the issue
-1. Clone this repository
-2. Build and run the containers
-```
-docker-compose up --build
-```
-
-There should be several auths that are sent to the endpoints and eventually FreeRADIUS `system-under-test` crashes.
-
-## Logs:
-```
 Attaching to endpoint2, endpoint1, system-under-test, tester
 endpoint2         |[0m installing certs
 system-under-test |[0m installing certs
@@ -2378,4 +2349,3 @@ system-under-test |[0m Aborted (core dumped)
 system-under-test exited with code 134
 endpoint1         |[0m Tue May 28 18:54:33 2024 : Info:  ... shutting down socket auth+acct from client (172.24.0.4, 51297) -> (*, 2083, virtual-server=test_server)
 endpoint1         |[0m Tue May 28 18:54:37 2024 : Auth: (15) Login incorrect (No Auth-Type found: rejecting the user via Post-Auth-Type = Reject): [test@user] (from client anyradsec port 0)
-```
