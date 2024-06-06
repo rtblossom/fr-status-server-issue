@@ -6,6 +6,8 @@ FreeRADIUS version: 3.2.3
 
 Problem: FreeRADIUS crashes when sending status-server messages to endpoints over RadSec.
 
+EDIT: Issue fixed in FreeRADIUS 3.2.4. See https://github.com/FreeRADIUS/freeradius-server/issues/5326
+
 My architecture is as follows:
 ```
 client -> system-under-test -> endpoint1/endpoint2
